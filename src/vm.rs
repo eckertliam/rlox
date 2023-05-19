@@ -1,6 +1,7 @@
 use crate::opcode::OpCode;
 use crate::chunk::Chunk;
 use crate::value::Value;
+use crate::compiler::compile;
 
 pub enum InterpretResult {
     Ok,
@@ -55,8 +56,8 @@ impl VM {
         self.stack[self.stack_top]
     }
     
-    pub fn interpret(&mut self, chunk: Chunk) -> InterpretResult {
-        self.chunk = chunk;
+    pub fn interpret(&mut self, source: String) -> InterpretResult {
+        self.chunk = compile(source);
         self.ip = 0;
         self.run()
     }
