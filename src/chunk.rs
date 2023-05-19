@@ -1,10 +1,11 @@
 use crate::value::{ValueArray, Value};
 use crate::opcode::OpCode;
 
+#[derive(Debug)]
 pub struct Chunk {
-    code: Vec<u8>,
-    values: ValueArray,
-    lines: Vec<usize>,
+    pub code: Vec<u8>,
+    pub values: ValueArray,
+    pub lines: Vec<usize>,
 }
 
 impl Chunk {
@@ -35,7 +36,7 @@ impl Chunk {
     fn constant_instruction(&self, name: &str, offset: usize) -> usize {
         let constant = self.code[offset + 1];
         print!("{} {:4} ", name, constant);
-        println!("{:?}", self.values.values[constant as usize]);
+        println!("{:?}", self.values.data[constant as usize]);
         offset + 2
     }
 
@@ -51,6 +52,11 @@ impl Chunk {
         let instruction = self.code[offset].into();
         match instruction {
             OpCode::OP_CONSTANT => self.constant_instruction("OP_CONSTANT", offset),
+            OpCode::OP_ADD => self.simple_instruction("OP_ADD", offset),
+            OpCode::OP_SUBTRACT => self.simple_instruction("OP_SUBTRACT", offset),
+            OpCode::OP_MULTIPLY => self.simple_instruction("OP_MULTIPLY", offset),
+            OpCode::OP_DIVIDE => self.simple_instruction("OP_DIVIDE", offset),
+            OpCode::OP_NEGATE => self.simple_instruction("OP_NEGATE", offset),
             OpCode::OP_RETURN => self.simple_instruction("OP_RETURN", offset),
         }
     }
@@ -66,6 +72,6 @@ impl Chunk {
 
     pub fn add_constant(&mut self, value: Value) -> usize {
         self.values.write_value(value);
-        self.values.values.len() - 1
+        self.values.data.len() - 1
     }
 }
