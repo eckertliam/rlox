@@ -53,7 +53,7 @@ impl std::ops::Div for Value {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ValueArray {
     pub data: Vec<Value>,
 }

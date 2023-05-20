@@ -1,7 +1,7 @@
 use crate::value::{ValueArray, Value};
 use crate::opcode::OpCode;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Chunk {
     pub code: Vec<u8>,
     pub values: ValueArray,

@@ -16,7 +16,7 @@ impl Token {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Copy)]
 pub enum TokenType {
     LEFT_PAREN,
     RIGHT_PAREN,

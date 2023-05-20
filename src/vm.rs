@@ -1,7 +1,7 @@
 use crate::opcode::OpCode;
 use crate::chunk::Chunk;
 use crate::value::Value;
-use crate::compiler::compile;
+use crate::compiler::Compiler;
 
 pub enum InterpretResult {
     Ok,
@@ -11,8 +11,9 @@ pub enum InterpretResult {
 
 const STACK_MAX: usize = 256;
 
-#[derive(Debug)]
+
 pub struct VM {
+    compiler: Compiler,
     chunk: Chunk,
     ip: usize,
     stack: [Value; STACK_MAX],
@@ -33,6 +34,7 @@ macro_rules! binary_op {
 impl VM {
     pub fn new() -> Self {
         Self {
+            compiler: Compiler::new(String::new()),
             chunk: Chunk::new(),
             ip: 0,
             stack: [Value::Number(0.0); STACK_MAX],
@@ -57,15 +59,19 @@ impl VM {
     }
     
     pub fn interpret(&mut self, source: String) -> InterpretResult {
-        self.chunk = compile(source);
+        self.compiler = Compiler::new(source);
+        self.compiler.compile();
+        self.chunk = self.compiler.current_chunk.clone();
         self.ip = 0;
         self.run()
     }
 
     // run with stack trace
     // TODO: implement compiler flag to enable/disable stack trace
-    pub fn debug_interpret(&mut self, chunk: Chunk) -> InterpretResult {
-        self.chunk = chunk;
+    pub fn debug_interpret(&mut self, source: String) -> InterpretResult {
+        self.compiler = Compiler::new(source);
+        self.compiler.compile();
+        self.chunk = self.compiler.current_chunk.clone();
         self.ip = 0;
         self.debug_run()
     }

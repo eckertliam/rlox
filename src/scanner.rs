@@ -158,7 +158,8 @@ impl Scanner {
         while self.peek().is_alphanumeric() || self.peek() == '_' {
             self.advance();
         }
-        self.make_token(self.identifier_type())
+        let token_type = self.identifier_type();
+        self.make_token(token_type)
     }
 
     pub fn scan_token(&mut self) -> Token {
