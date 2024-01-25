@@ -237,7 +237,7 @@ impl Scanner {
 
                 return self.make_token(TokenType::NUMBER);
             }
-            _ => self.error_token("Unexpected character."),
+            _ => self.error_token(&format!("Unexpected character: {}", c)),
         }
     }
 }

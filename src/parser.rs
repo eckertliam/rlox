@@ -1,4 +1,4 @@
-use std::io::{stderr, Write};
+use std::{fmt::format, io::{stderr, Write}};
 
 use crate::{token::{Token, TokenType}, scanner::Scanner};
 
@@ -83,7 +83,7 @@ impl Parser {
             if token.token_type != TokenType::ERROR {
                 break;
             }
-            self.error_at_current("Invalid token");
+            self.error_at_current(&format!("Token: {}\nLine: {}", token.lexeme, token.line));
         }
     }
 }

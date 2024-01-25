@@ -7,16 +7,22 @@ mod scanner;
 mod token;
 mod parser;
 
+use std::io::Write;
 
-use compiler::Compiler;
 use vm::{VM, InterpretResult};
 
 fn repl(vm: &mut VM) {
     loop {
         print!("> ");
-        let mut line = String::new();
-        std::io::stdin().read_line(&mut line).expect("Error reading line");
-        vm.interpret(line);
+        std::io::stdout().flush().expect("Error flushing stdout");
+        let mut input = String::new();
+        std::io::stdin().read_line(&mut input).expect("Error reading line");
+        let res = vm.interpret(input);
+        match res {
+            InterpretResult::CompileError => std::process::exit(65),
+            InterpretResult::RuntimeError => std::process::exit(70),
+            _ => (),
+        }
     }
 }
 
@@ -32,5 +38,15 @@ fn run_file(vm: &mut VM, path: &str) {
 
 fn main() {
     let mut vm = VM::new();
-    vm.debug_interpret("1 + 2 * 3;".to_string());
+
+    let args: Vec<String> = std::env::args().collect();
+
+    if args.len() == 1 {
+        repl(&mut vm);
+    } else if args.len() == 2 {
+        run_file(&mut vm, &args[1]);
+    } else {
+        eprintln!("Usage: rlox [path]");
+        std::process::exit(64);
+    }
 }
